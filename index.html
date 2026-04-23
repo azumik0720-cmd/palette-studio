@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Palette Studio</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <div class="label">COLOR TOOL</div>
+      <div class="title">Palette Studio</div>
+    </div>
+    <div class="header-right">
+      <div class="api-wrap" id="api-wrap">
+        <input class="api-input" type="password" id="api-key-input" placeholder="Gemini APIキーを入力...">
+        <button class="api-save" onclick="saveApiKey()">保存</button>
+        <span class="api-status" id="api-status"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('generate')">GENERATE</button>
+    <button class="tab" onclick="switchTab('mypalette')">MY PALETTE</button>
+    <button class="tab" onclick="switchTab('saved')">SAVED</button>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- SIDEBAR: GENERATE -->
+    <div class="sidebar" id="sb-generate">
+
+      <!-- スライダー -->
+      <div class="section">
+        <div class="slabel">MOOD SLIDERS</div>
+        <div class="slider-group">
+          <div class="slider-row">
+            <span class="slider-l">暖かい</span>
+            <input type="range" min="0" max="4" value="2" class="slider" id="sl-warm" oninput="updateSliderLabel('warm',this.value)">
+            <span class="slider-r">冷たい</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-l">明るい</span>
+            <input type="range" min="0" max="4" value="2" class="slider" id="sl-bright" oninput="updateSliderLabel('bright',this.value)">
+            <span class="slider-r">暗い</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-l">柔らかい</span>
+            <input type="range" min="0" max="4" value="2" class="slider" id="sl-soft" oninput="updateSliderLabel('soft',this.value)">
+            <span class="slider-r">硬い</span>
+          </div>
+        </div>
+        <div class="mood-preview" id="mood-preview">— / — / —</div>
+      </div>
+
+      <!-- 何色 -->
+      <div class="section">
+        <div class="slabel">COLORS</div>
+        <div class="count-row">
+          <button class="cbtn" onclick="setCount(2)" id="count-2">2色</button>
+          <button class="cbtn active" onclick="setCount(3)" id="count-3">3色</button>
+          <button class="cbtn" onclick="setCount(4)" id="count-4">4色</button>
+        </div>
+      </div>
+
+      <!-- 固定色（任意） -->
+      <div class="section">
+        <div class="slabel">USE MY COLOR（任意）</div>
+        <div class="fix-chips" id="fix-chips"></div>
+        <div class="fix-hint">マイパレットの色を指定できます</div>
+      </div>
+
+      <!-- 生成ボタン -->
+      <div class="section">
+        <button class="gen-btn" id="gen-btn" onclick="generate()">GENERATE</button>
+        <div class="error-msg" id="error-msg"></div>
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR: MY PALETTE -->
+    <div class="sidebar" id="sb-mypalette" style="display:none">
+      <div class="section">
+        <div class="slabel">MY COLORS</div>
+        <div class="swatch-grid" id="my-swatch-grid"></div>
+        <div class="action-bar" id="action-bar">
+          <span class="hint">色をタップして選択 → 編集・削除</span>
+        </div>
+      </div>
+      <div class="section">
+        <div class="slabel">追加 — ピッカー / HEX</div>
+        <div class="add-row">
+          <div class="cpicker-wrap">
+            <input type="color" id="picker-color" value="#C8B8A2" oninput="syncPicker()">
+          </div>
+          <input type="text" id="hex-input" placeholder="#C8B8A2" oninput="syncHex()" style="flex:1">
+        </div>
+        <div class="add-row" style="margin-top:6px">
+          <input type="text" id="name-input" placeholder="色の名前（任意）" style="flex:1">
+          <button class="add-btn" onclick="addColor()">追加</button>
+        </div>
+      </div>
+      <div class="section">
+        <div class="slabel">追加 — 画像からピック</div>
+        <label class="img-upload-label">
+          <span class="upload-icon">⊡</span>
+          <span class="upload-text">画像を選択してカラーピック</span>
+          <input type="file" accept="image/*" onchange="openPickerModal(event)" style="display:none">
+        </label>
+      </div>
+    </div>
+
+    <!-- SIDEBAR: SAVED -->
+    <div class="sidebar" id="sb-saved" style="display:none">
+      <div class="section">
+        <div class="slabel">SAVED PALETTES</div>
+        <p class="hint" style="line-height:1.9">生成した配色の ★ を<br>クリックして保存できます。</p>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content" id="content-area">
+      <div class="empty-state">
+        <div class="empty-icon">◈</div>
+        <div class="empty-text">スライダーを動かしてGENERATEを押してください</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- COLOR PICKER MODAL -->
+<div class="picker-modal" id="picker-modal">
+  <div class="picker-inner">
+    <div class="picker-header">
+      <span>IMAGE COLOR PICKER</span>
+      <button class="picker-close" onclick="closePickerModal()">✕</button>
+    </div>
+    <div class="picker-img-wrap" id="picker-img-wrap">
+      <img id="picker-img" draggable="false" alt="">
+      <div class="lupe" id="lupe">
+        <canvas id="lupe-canvas" width="180" height="180"></canvas>
+        <div class="lupe-cross"></div>
+      </div>
+    </div>
+    <div class="picker-footer">
+      <div class="picked-swatch" id="picked-swatch"></div>
+      <div class="picked-hex" id="picked-hex">画像をスライドして色をピック</div>
+      <button class="picker-add-btn" onclick="addPickedColor()">+ 追加</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
