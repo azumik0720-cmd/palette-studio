@@ -58,7 +58,6 @@ async function saveColorToDb(color) {
   try {
     await sbFetch('/rest/v1/my_colors', 'POST', color);
   } catch(e) {
-    // fallback to localStorage
     const arr = JSON.parse(localStorage.getItem('my_palette') || '[]');
     arr.push(color);
     localStorage.setItem('my_palette', JSON.stringify(arr));
@@ -114,19 +113,19 @@ async function deletePaletteFromDb(dbId) {
 }
 
 // ══════════════════════════════════════════════
-// API KEY
+// API KEY（Groq用に変更）
 // ══════════════════════════════════════════════
 function saveApiKey() {
   const v = document.getElementById('api-key-input').value.trim();
-  if (!v.startsWith('AIza')) { setStatus('❌ Gemini APIキーは AIza... から始まります', 'var(--red)'); return; }
+  if (!v.startsWith('gsk_')) { setStatus('❌ GroqのAPIキーは gsk_ から始まります', 'var(--red)'); return; }
   S.apiKey = v;
-  localStorage.setItem('ps_gemini_key', v);
+  localStorage.setItem('ps_groq_key', v);
   setStatus('✓ 保存済み', '#27ae60');
   document.getElementById('api-key-input').value = '••••••••••••' + v.slice(-4);
 }
 
 function loadApiKey() {
-  const k = localStorage.getItem('ps_gemini_key');
+  const k = localStorage.getItem('ps_groq_key');
   if (k) {
     S.apiKey = k;
     document.getElementById('api-key-input').value = '••••••••••••' + k.slice(-4);
@@ -140,26 +139,29 @@ function setStatus(msg, color) {
 }
 
 // ══════════════════════════════════════════════
-// GEMINI API
+// GROQ API（Geminiから置き換え）
 // ══════════════════════════════════════════════
-async function callGemini(prompt) {
+async function callGroq(prompt) {
   if (!S.apiKey) throw new Error('APIキーを入力して保存してください');
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${S.apiKey}`;
-  const res = await fetch(url, {
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${S.apiKey}`
+    },
     body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.8, maxOutputTokens: 1500 }
+      model: 'llama-3.3-70b-versatile',
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.8,
+      max_tokens: 1500
     })
   });
   if (!res.ok) {
     const t = await res.text();
-    throw new Error('Gemini API エラー: ' + res.status + ' — ' + t.slice(0, 120));
+    throw new Error('Groq API エラー: ' + res.status + ' — ' + t.slice(0, 120));
   }
   const data = await res.json();
-  const text = (data.candidates?.[0]?.content?.parts?.[0]?.text || '').trim();
-  // JSON抽出
+  const text = (data.choices?.[0]?.message?.content || '').trim();
   try { return JSON.parse(text); } catch(_) {}
   const m = text.match(/\{[\s\S]*\}/);
   if (m) { try { return JSON.parse(m[0]); } catch(_) {} }
@@ -218,18 +220,20 @@ Requirements:
 - Use sophisticated, harmonious hex color codes that match the mood
 - name: short poetic 2-4 character Japanese name
 - mood: one evocative Japanese sentence description
+- The 3 palettes must have clearly different hue families (e.g. warm/cool/neutral)
+- Background and text colors must have contrast ratio of at least 4.5
 
-Return ONLY this JSON, no other text:
+Return ONLY valid JSON, no markdown, no explanation:
 {"palettes":[{"name":"静寂","mood":"静かな朝の光を感じさせる","colors":[{"hex":"#F2EDE8","role":"background"},{"hex":"#2C2825","role":"text"},{"hex":"#8B9E8A","role":"point"}]}]}`;
 }
 
 async function generate() {
-  if (!S.apiKey) { showError('Gemini APIキーを入力して保存してください'); return; }
+  if (!S.apiKey) { showError('GroqのAPIキーを入力して保存してください'); return; }
   S.loading = true;
   hideError();
   renderLoading();
   try {
-    const r = await callGemini(buildPrompt());
+    const r = await callGroq(buildPrompt());
     S.palettes = r.palettes || [];
     if (!S.palettes.length) throw new Error('パレットデータが空です');
     renderPalettes();
@@ -533,7 +537,6 @@ function openPickerModal(e) {
 function closePickerModal() {
   document.getElementById('picker-modal').classList.remove('open');
   document.getElementById('lupe').style.display = 'none';
-  // inputをリセット（同じファイルを再選択できるように）
   const inputs = document.querySelectorAll('input[type=file]');
   inputs.forEach(i => i.value = '');
 }
@@ -568,7 +571,6 @@ function doPickColor(e) {
   const img = document.getElementById('picker-img');
   const { ix, iy, cx, cy } = getImgCoords(e, img);
 
-  // 3×3平均色
   let r=0,g=0,b=0,n=0;
   for(let dx=-1;dx<=1;dx++) for(let dy=-1;dy<=1;dy++) {
     const px = _pickerCtx.getImageData(Math.max(0,ix+dx), Math.max(0,iy+dy), 1, 1).data;
@@ -580,7 +582,6 @@ function doPickColor(e) {
   document.getElementById('picked-swatch').style.background = hex;
   document.getElementById('picked-hex').textContent = hex;
 
-  // ルーペ
   updateLupe(cx, cy, ix, iy, img);
 }
 
@@ -610,7 +611,6 @@ function updateLupe(cx, cy, ix, iy, imgEl) {
   lupeCtx.restore();
 }
 
-// イベント登録
 document.addEventListener('DOMContentLoaded', () => {
   const wrap = document.getElementById('picker-img-wrap');
   wrap.addEventListener('mousemove', doPickColor, { passive: false });
