@@ -428,7 +428,16 @@ async function buildPrompt() {
   } else if (S.currentSubTab === 'word') {
     const tags = [...selectedWordTags, ...selectedTrendTags];
     const free = document.getElementById('word-free').value.trim();
+<<<<<<< HEAD
+    const words = [...tags, free].filter(Boolean).join(', ');
+    inputDesc = `Theme: ${words}.
+Think deeply about the specific visual and emotional qualities of these words — the textures, materials, lighting, and atmosphere they evoke.
+Examples: フランス → dusty stone walls, café au lait, faded terracotta, sage green shutters, aged parchment.
+北欧 → birch white, slate grey, forest green, midnight blue, raw linen.
+Do NOT create generic palettes. Translate the true essence into specific, evocative color values.`;
+=======
     inputDesc = `Theme keywords: ${[...tags, free].filter(Boolean).join(', ')}.`;
+>>>>>>> 3814c0134c68c34ae921d2feb6adfbf0233d4132
   } else if (S.currentSubTab === 'color') {
     const tags = [...selectedColorTags];
     const free = document.getElementById('color-free').value.trim();
@@ -437,7 +446,17 @@ async function buildPrompt() {
   } else if (S.currentSubTab === 'brand') {
     const tags = [...selectedBrandTags];
     const free = document.getElementById('brand-free').value.trim();
+<<<<<<< HEAD
+    const brands = [...tags, free].filter(Boolean).join(', ');
+    inputDesc = `Brand inspiration: ${brands}.
+Deeply evoke each brand's actual color DNA — their specific palette, tone, and visual language.
+Examples: エルメス → warm burnt orange, natural saddle leather, cream, deep chocolate.
+Kinfolk → warm off-white, dusty sage, muted terracotta, linen beige.
+スターバックス → deep forest green, warm cream, earthy brown.
+Do NOT create generic palettes. Capture the brand's true visual identity.`;
+=======
     inputDesc = `Brand inspiration: ${[...tags, free].filter(Boolean).join(', ')}. Evoke the brand's visual identity.`;
+>>>>>>> 3814c0134c68c34ae921d2feb6adfbf0233d4132
   } else if (S.currentSubTab === 'mycolor') {
     const free = document.getElementById('mycolor-free').value.trim();
     const colorDesc = S.selectedMyColors.map(c => `${c.hex}${c.role ? ` as ${c.role}` : ''}`).join(', ');
@@ -458,8 +477,13 @@ Requirements:
 - name: short poetic 2-4 character Japanese name (e.g. 夕凪、霧雨、黎明)
 - mood: one evocative Japanese sentence
 
+<<<<<<< HEAD
+Return ONLY valid JSON, no markdown. Example structure for ${S.count} colors:
+${JSON.stringify({palettes:[{name:"夕凪",mood:"穏やかな夕暮れのような温もり",colors:roles.map((r,i)=>({hex:["#F2EDE8","#2C2825","#C1674A","#8B9E8A"].slice(0,roles.length)[i],role:r}))}]})}`;
+=======
 Return ONLY valid JSON, no markdown:
 {"palettes":[{"name":"夕凪","mood":"穏やかな夕暮れのような温もり","colors":[{"hex":"#F2EDE8","role":"background"},{"hex":"#2C2825","role":"text"},{"hex":"#C1674A","role":"point"}]}]}`;
+>>>>>>> 3814c0134c68c34ae921d2feb6adfbf0233d4132
 }
 
 // ══════════════════════════════════════════════
