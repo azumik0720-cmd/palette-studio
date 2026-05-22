@@ -38,7 +38,6 @@
     ══════════════════════════════ -->
     <div class="sidebar" id="tab-generate">
 
-<<<<<<< HEAD
       <!-- 上段：入口タブ + Today -->
       <div class="sidebar-top">
         <button class="today-btn" onclick="generateToday()">
@@ -146,126 +145,11 @@
 
       <!-- 下段：色数 + Generateボタン（固定） -->
       <div class="sidebar-bottom">
-=======
-      <!-- 今日のパレット -->
-      <button class="today-btn" onclick="generateToday()">
-        <div class="today-btn-left">
-          <div class="today-btn-label">Today's Palette</div>
-          <div class="today-btn-text">今日のパレットを生成</div>
-        </div>
-        <div class="today-btn-icon">◈</div>
-      </button>
-
-      <!-- SUB TABS -->
-      <div class="sub-tabs">
-        <button class="sub-tab active" onclick="switchSubTab('image')">画像</button>
-        <button class="sub-tab" onclick="switchSubTab('word')">ワード</button>
-        <button class="sub-tab" onclick="switchSubTab('color')">カラー</button>
-        <button class="sub-tab" onclick="switchSubTab('brand')">ブランド</button>
-        <button class="sub-tab" onclick="switchSubTab('mycolor')">マイカラー</button>
-      </div>
-
-      <!-- ── 画像入口 ── -->
-      <div id="sub-image">
-        <div class="section">
-          <div class="slabel">画像をアップロード</div>
-          <div class="img-upload-area" id="img-upload-area">
-            <input type="file" accept="image/*" onchange="handleGenerateImage(event)">
-            <div class="img-upload-icon">⊡</div>
-            <div class="img-upload-text">画像を選択またはドロップ</div>
-          </div>
-          <div class="img-preview-wrap" id="img-preview-wrap" style="display:none">
-            <img id="img-preview" class="img-preview" alt="">
-            <button class="img-preview-remove" onclick="removeGenerateImage()">✕</button>
-          </div>
-        </div>
-        <div class="section">
-          <div class="free-input-label">補正メモ（任意）</div>
-          <textarea id="image-memo" placeholder="例：清潔感多めで、少し明るく"></textarea>
-        </div>
-      </div>
-
-      <!-- ── ワード入口 ── -->
-      <div id="sub-word" style="display:none">
-        <div class="section">
-          <button class="trend-btn" onclick="generateTrends()">
-            ✦ トレンドワードを生成
-          </button>
-          <div class="trend-tags" id="trend-tags"></div>
-          <div class="tag-categories" id="word-tags"></div>
-        </div>
-        <div class="section">
-          <div class="free-input-label">自由入力（任意）</div>
-          <textarea id="word-free" placeholder="例：ダスティローズ、スモーキーなブルーグリーン"></textarea>
-        </div>
-      </div>
-
-      <!-- ── カラーテーマ入口 ── -->
-      <div id="sub-color" style="display:none">
-        <div class="section">
-          <div class="slabel">カラーテーマ</div>
-          <div class="tag-categories" id="color-tags"></div>
-        </div>
-        <div class="section">
-          <div class="slabel">固定色（任意）</div>
-          <div class="color-fix-wrap">
-            <div class="cpicker-wrap">
-              <input type="color" id="theme-picker" value="#C1674A" oninput="syncThemePicker()">
-            </div>
-            <input type="text" id="theme-hex" placeholder="#C1674A" oninput="syncThemeHex()" style="flex:1">
-            <button class="tbtn" onclick="clearThemeColor()">✕</button>
-          </div>
-        </div>
-        <div class="section">
-          <div class="free-input-label">自由入力（任意）</div>
-          <textarea id="color-free" placeholder="例：いちごやもものようなジューシーなイメージ"></textarea>
-        </div>
-      </div>
-
-      <!-- ── ブランド入口 ── -->
-      <div id="sub-brand" style="display:none">
-        <div class="section">
-          <div class="slabel">ブランドを選ぶ</div>
-          <div class="tag-categories" id="brand-tags"></div>
-        </div>
-        <div class="section">
-          <div class="free-input-label">自由入力（任意）</div>
-          <textarea id="brand-free" placeholder="例：Acne Studios、ロンハーマン"></textarea>
-        </div>
-      </div>
-
-      <!-- ── マイカラー入口 ── -->
-      <div id="sub-mycolor" style="display:none">
-        <div class="section">
-          <div class="slabel">使う色を選ぶ</div>
-          <div class="mycolor-grid" id="mycolor-grid"></div>
-          <div id="mycolor-role-wrap" style="display:none">
-            <div class="free-input-label" style="margin-top:8px">役割を指定（任意）</div>
-            <div class="role-select" id="mycolor-role-select"></div>
-          </div>
-        </div>
-        <div class="section">
-          <div class="free-input-label">自由入力（任意）</div>
-          <textarea id="mycolor-free" placeholder="例：温かみのある組み合わせで"></textarea>
-        </div>
-      </div>
-
-      <!-- 色数 -->
-      <div class="section">
-        <div class="slabel">色数</div>
->>>>>>> 3814c0134c68c34ae921d2feb6adfbf0233d4132
         <div class="count-row">
           <button class="cbtn" onclick="setCount(2)" id="count-2">2色</button>
           <button class="cbtn active" onclick="setCount(3)" id="count-3">3色</button>
           <button class="cbtn" onclick="setCount(4)" id="count-4">4色</button>
         </div>
-<<<<<<< HEAD
-=======
-      </div>
-
-      <!-- 生成ボタン -->
-      <div class="section">
->>>>>>> 3814c0134c68c34ae921d2feb6adfbf0233d4132
         <button class="btn-primary" onclick="generate()">Generate</button>
         <div class="error-msg" id="error-msg"></div>
       </div>
@@ -275,15 +159,9 @@
     <!-- ══════════════════════════════
          MY PALETTE TAB
     ══════════════════════════════ -->
-<<<<<<< HEAD
     <div class="sidebar-simple" id="tab-mypalette" style="display:none">
       <div class="section">
         <span class="slabel">My Colors</span>
-=======
-    <div class="sidebar" id="tab-mypalette" style="display:none">
-      <div class="section">
-        <div class="slabel">My Colors</div>
->>>>>>> 3814c0134c68c34ae921d2feb6adfbf0233d4132
         <div class="swatch-grid" id="my-swatch-grid"></div>
         <div class="action-bar" id="action-bar">
           <span class="hint">色をタップして選択 → 編集・削除</span>
@@ -312,37 +190,21 @@
     </div>
 
     <!-- ══════════════════════════════
-<<<<<<< HEAD
          SAVED TAB（サイドバーは空）
     ══════════════════════════════ -->
     <div class="sidebar-simple" id="tab-saved" style="display:none">
       <div class="section">
         <span class="slabel">Saved Palettes</span>
-=======
-         SAVED TAB
-    ══════════════════════════════ -->
-    <div class="sidebar" id="tab-saved" style="display:none">
-      <div class="section">
-        <div class="slabel">Saved Palettes</div>
->>>>>>> 3814c0134c68c34ae921d2feb6adfbf0233d4132
         <p class="hint" style="line-height:1.9">生成した配色の ★ をクリックして保存できます。</p>
       </div>
     </div>
 
     <!-- ══════════════════════════════
-<<<<<<< HEAD
          HISTORY TAB（サイドバーは空）
     ══════════════════════════════ -->
     <div class="sidebar-simple" id="tab-history" style="display:none">
       <div class="section">
         <span class="slabel">History</span>
-=======
-         HISTORY TAB
-    ══════════════════════════════ -->
-    <div class="sidebar" id="tab-history" style="display:none">
-      <div class="section">
-        <div class="slabel">生成履歴</div>
->>>>>>> 3814c0134c68c34ae921d2feb6adfbf0233d4132
         <p class="hint" style="line-height:1.9">過去に生成したパレットを表示できます。</p>
       </div>
     </div>
@@ -350,12 +212,7 @@
     <!-- CONTENT AREA -->
     <div class="content" id="content-area">
       <div class="empty-state">
-<<<<<<< HEAD
         <div class="empty-text">入口を選んで<br>Generate を押してください</div>
-=======
-        <div class="empty-icon">◈</div>
-        <div class="empty-text">入口を選んで<br>Generateを押してください</div>
->>>>>>> 3814c0134c68c34ae921d2feb6adfbf0233d4132
       </div>
     </div>
 
@@ -377,11 +234,7 @@
   </div>
 </div>
 
-<<<<<<< HEAD
 <!-- IMAGE PICKER MODAL -->
-=======
-<!-- IMAGE PICKER MODAL（マイパレット用） -->
->>>>>>> 3814c0134c68c34ae921d2feb6adfbf0233d4132
 <div class="picker-modal" id="picker-modal">
   <div class="picker-inner">
     <div class="picker-header">
